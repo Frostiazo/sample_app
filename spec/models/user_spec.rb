@@ -22,9 +22,14 @@ describe User do
   it { should be_valid }
 
   # name tests
-  
+
   describe "when name is not present" do
     before { @user.name = " " }
+    it { should_not be_valid }
+  end
+
+  describe "when name is too long" do
+    before { @user.name = "a" * 51 }
     it { should_not be_valid }
   end
 
@@ -33,11 +38,6 @@ describe User do
 
   describe "when email is not present" do
     before { @user.email = " " }
-    it { should_not be_valid }
-  end
-
-  describe "when name is too long" do
-    before { @user.name = "a" * 51 }
     it { should_not be_valid }
   end
 
@@ -70,6 +70,16 @@ describe User do
     end
 
     it { should_not be_valid }
+  end
+
+  describe "email address with mixed case" do
+    let(:mixed_case_email) { "Foo@ExAmpLe.CoM" }
+
+    it "should be saved as all lower-case" do
+      @user.email = mixed_case_email
+      @user.save
+      expect(@user.reload.email).to eq mixed_case_email.downcase
+    end
   end
 
 
