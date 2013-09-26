@@ -1,9 +1,17 @@
 include ApplicationHelper
 
-def valid_signin(user)
-  fill_in "Email",    with: user.email
-  fill_in "Password", with: user.password
-  click_button "Sign in"
+def sign_in(user, options={})
+  if options[:not_capybara]
+    # Sign in when not using capybara
+    remember_token = User.new_remember_token
+    cookies[:remember_token] = remember_token
+    user.update_attribute :remember_token, User.encrypt(remember_token)
+  else
+    visit signin_path
+    fill_in "Email",    with: user.email
+    fill_in "Password", with: user.password
+    click_button "Sign in"
+  end
 end
 
 def valid_signup
@@ -24,3 +32,4 @@ RSpec::Matchers.define :have_success_message do |message|
     expect(page).to have_selector('div.alert.alert-success', text: message)
   end
 end
+
