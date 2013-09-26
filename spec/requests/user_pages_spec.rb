@@ -85,7 +85,9 @@ describe "UserPages" do
     end
 
     describe "with valid_information" do
-      before { valid_signup }
+      before { fill_user_fields(name: "Example User",
+                                email: "user@example.com",
+                                password: "foobar") }
 
       it "should create a user" do
         expect { click_button submit }.to change(User, :count).by(1)
@@ -138,10 +140,8 @@ describe "UserPages" do
         let(:new_name)  { "New Name" }
         let(:new_email) { "new@example.com" }
         before do
-          fill_in "Name",             with: new_name
-          fill_in "Email",            with: new_email
-          fill_in "Password",         with: user.password
-          fill_in "Confirmation", with: user.password
+          fill_user_fields(name: new_name, email: new_email,
+                           password: user.password)
           click_button "Save changes"
         end
 
@@ -152,5 +152,19 @@ describe "UserPages" do
         specify { expect(user.reload.email).to eq new_email }
       end
     end
+
+
+    describe "forbidden attributes" do
+      let(:params) do
+        { user: { admin: true, password: user.password,
+                  password_confirmation: user.password } }
+      end
+      before do
+        sign_in user, not_capybara: true
+        patch user_path(user), params
+      end
+      specify { expect(user.reload).not_to be_admin }
+    end
   end
+
 end

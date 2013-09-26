@@ -8,17 +8,21 @@ def sign_in(user, options={})
     user.update_attribute :remember_token, User.encrypt(remember_token)
   else
     visit signin_path
-    fill_in "Email",    with: user.email
-    fill_in "Password", with: user.password
-    click_button "Sign in"
+    fill_sign_in_form(user)
   end
 end
 
-def valid_signup
-  fill_in "Name",         with: "Example User"
-  fill_in "Email",        with: "user@example.com"
-  fill_in "Password",     with: "foobar"
-  fill_in "Confirmation", with: "foobar"
+def fill_sign_in_form(user)
+  fill_in "Email",    with: user.email
+  fill_in "Password", with: user.password
+  click_button "Sign in"
+end
+
+def fill_user_fields(fields)
+  fill_in "Name",               with: fields[:name]
+  fill_in "Email",              with: fields[:email]
+  fill_in "Password",           with: fields[:password]
+  fill_in "Confirm Password",   with: fields[:password]
 end
 
 RSpec::Matchers.define :have_error_message do |message|
