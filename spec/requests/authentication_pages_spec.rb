@@ -49,6 +49,8 @@ describe 'Authentication' do
     end
   end
 
+  # --- authorization ---
+
   describe "authorization" do
 
     describe "for non-signed-in users" do
@@ -158,6 +160,25 @@ describe 'Authentication' do
       end
     end
 
+    describe "all users" do
+      let(:user) { FactoryGirl.create(:user) }
+      before { sign_in(user, not_capybara: :true) }
+
+      describe "microposts delete links" do
+        let(:other_user) { FactoryGirl.create(:user) }
+        let!(:other_m) { FactoryGirl.create(:micropost, user: other_user) }
+        let!(:user_m) { FactoryGirl.create(:micropost, user: user) }
+
+        it "can't be seen for other user's microposts" do
+          visit user_path(other_user)
+          page.should_not have_link('delete', href: micropost_path(other_m))
+        end
+
+      end
+
+    end
+
   end
+
 end
 

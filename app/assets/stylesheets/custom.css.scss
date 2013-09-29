@@ -35,6 +35,11 @@ textarea {
   }
 }
 
+.red-text {
+  color: #f20;
+}
+
+
 /* typography */
 
 h1, h2, h3, h4, h5, h6 {
@@ -222,5 +227,10 @@ aside {
   textarea {
     height: 100px;
     margin-bottom: 5px;
+  }
+
+  .char-counter {
+    float: right;
+    margin-right: 10px;
   }
 }
